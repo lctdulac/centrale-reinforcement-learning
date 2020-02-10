@@ -1,1 +1,7 @@
 .DS_Store
+
+#jupyter checkpoints
+.ipynb_checkpoints
+
+#python cache file
+__pycache__/
