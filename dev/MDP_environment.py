@@ -1,7 +1,48 @@
 import numpy as np
-from random import random, randint
+from random import random, randint, seed
+
+#set the seed so we generate the same grid
+seed(42)
+
 
 class MDP_environment():
+    """
+    In this class we create a markov decision process (MDP) environment to run Reinforcement Learning experience
+    ________________________________________________________________
+    Parameters :
+    - n_lin : int
+    The number of line in the grid
+    - n_col : int
+    The number of column in the grid
+    - p_obs : float [0,1] (default=0.15)
+    The proportion of obstacles in the grid : for each state we draw a random number between 0 and 1
+    and if it is <p_obs we consider it as an obstacle
+    - n_traps : int (default=2)
+    Number of traps we want in our map
+    - p_coins : float [0,1] (default=0.1)
+    Proportion of coins in the grid : for each state we draw a random number between 0 and 1
+    and if it is <p_coins we consider it as a coin
+    ________________________________________________________________
+    Attributes :
+    - actions : dict
+    Dictionnary containing the actions that the agent can do. Every key is the name of the action, 
+    and the value is a list of probability to go to any adjacent state in this order : up, right, 
+    down, left
+    - grid : numpy array 
+    Cointain the states of the MDP over which the agent can act
+    - obstacles : list of tuple
+    List cointaining the coordinate of the obstacles in the grid
+    - treasure : tuple
+    Coordiante of the tresure
+    - traps : list of tuples
+    List cointaining the coordinate of the traps in the grid
+    - coins : list of tuples
+    List cointaining the coordinate of the coins in the grid
+    - T : numpy array
+    3D Matrix of transition of the MDP. You need to call get_transition_matrix to compute this matrix
+    - R : numpy array
+    Reward matrix stocking the reward associatedto each state
+    """
 
     def __init__(self, n_lin, n_col, p_obs=0.15, n_traps=2, p_coins=0.1):
         self.n_lin = n_lin
@@ -66,8 +107,6 @@ class MDP_environment():
         adj = np.zeros((self.n_states, self.n_states))
         for i in range(self.n_states) :
             for j in range(self.n_states) :
-            # Si on est sur un état adjacent, et que cet état n'est pas obstrué, on met un 1 qui signifie qu'on peut aller sur cet état à partir
-            # de l'état où l'on est
                 if (j==i-self.n_col or j==i+1 or j==i+self.n_col or j==i-1) and self.grid[j//self.n_col,j%self.n_col]!=-1 :
                     adj[i,j] = 1
         #we can now contruct the transition matrix T
@@ -77,9 +116,9 @@ class MDP_environment():
             Ta = np.zeros((self.n_states, self.n_states))
             prob_vector = self.actions[action]
             for i in range(self.n_states) :
-                for k in range(len(rotation_vect)):
+                for k in range(len(prob_vector)):
                     j = i+rotation_vect[k]
-                    if 0<=j<=15:
+                    if 0<=j<self.n_states:
                         Ta[i, j] = adj[i, j]*prob_vector[k]
                 Lsum = np.sum(Ta[i,:])
                 if Lsum !=1:
@@ -113,8 +152,7 @@ class MDP_environment():
 
 
 if __name__ == '__main__':
-    n_line = 5
-    n_column = 6
+    n_line, n_column = 5, 6
     mdp_env = MDP_environment(n_line, n_column)
     mdp_env.print_grid_infos()
     T = mdp_env.get_transition_matrix()
