@@ -116,12 +116,15 @@ class MDP_environment():
             Ta = np.zeros((self.n_states, self.n_states))
             prob_vector = self.actions[action]
             for i in range(self.n_states) :
-                for k in range(len(prob_vector)):
-                    j = i+rotation_vect[k]
-                    if 0<=j<self.n_states:
-                        Ta[i, j] = adj[i, j]*prob_vector[k]
+                if np.sum(adj[i,:])!=1.0:
+                    for k in range(len(prob_vector)):
+                        j = i+rotation_vect[k]
+                        if 0<=j<self.n_states:
+                            Ta[i, j] = adj[i, j]*prob_vector[k]
+                elif np.sum(adj[i,:])==1.0:
+                    Ta[i,:] = adj[i,:]
                 Lsum = np.sum(Ta[i,:])
-                if Lsum !=1:
+                if Lsum!=1:
                     Ta[i,:]*=1/Lsum
             T.append(Ta)
         self.T = np.array(T)
