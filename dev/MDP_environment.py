@@ -1,6 +1,5 @@
 import numpy as np
 from random import random, randint, seed
-from GUI import show_trajectory
 
 #set the seed so we generate the same grid
 seed(42)
@@ -153,11 +152,6 @@ class MDP_environment():
         print('\nObstacles coordinate : \n', self.obstacles)
         print('\nTraps coordinate : \n', self.traps)
         print('\nCoins coordinate : \n', self.coins)
-    
-    def show_trajectory(self, trajectory):
-        grid = [[1 for i in ranges(self.n_col)] for j in range(self.n_lin)]
-        
-        show_trajectory(grid, trajectory)
 
 
 if __name__ == '__main__':

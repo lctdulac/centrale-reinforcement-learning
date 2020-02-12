@@ -4,7 +4,9 @@ import os
 import random
 
 # 1: empty tile, 2: small reward, 3: big reward, 0: unpassable terrain, -1: punishment
-def show_trajectory(grid, trajectory):
+def show_trajectory(n_lin, n_col, trajectory):
+
+    grid = [[1 for i in range(n_col)] for j in range(n_lin)]
 
     pygame.init()
 
