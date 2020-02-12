@@ -4,7 +4,9 @@ import os
 import random
 
 # 1: empty tile, 2: small reward, 3: big reward, 0: unpassable terrain, -1: punishment
-def show_trajectory(grid, trajectory):
+def show_trajectory(n_lin, n_col, trajectory):
+
+    grid = [[1 for i in range(n_col)] for j in range(n_lin)]
 
     pygame.init()
 
@@ -79,5 +81,7 @@ def grid_pixel_coord(m,n,i,j,w=False):
 
 
 if __name__ == '__main__':
-    grid = [[1 for i in range(5)] for j in range(4)]
-    print(show_trajectory(grid, [[0,0],[1,0],[2,0],[2,1],[2,2],[2,3],[3,3]]))
+    n_lin = 4
+    n_col = 5
+    grid = [[1 for i in range(n_col)] for j in range(n_lin)]
+    print(show_trajectory(n_lin, n_col, [[0,0],[1,0],[2,0],[2,1],[2,2],[2,3],[3,3]]))
