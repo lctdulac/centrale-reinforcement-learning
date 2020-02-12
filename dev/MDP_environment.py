@@ -157,6 +157,8 @@ class MDP_environment():
     def show_trajectory(self, trajectory):
         grid = [[1 for i in ranges(self.n_col)] for j in range(self.n_lin)]
         
+        for i in self.
+        
         show_trajectory(grid, trajectory)
 
 
