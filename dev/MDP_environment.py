@@ -2,7 +2,7 @@ import numpy as np
 from random import random, randint, seed
 
 #set the seed so we generate the same grid
-seed(42)
+#seed(42)
 
 
 class MDP_environment():
@@ -83,7 +83,7 @@ class MDP_environment():
     def set_traps(self,n_traps):
         self.traps = []
         while n_traps>0:
-            i, j = randint(0, self.n_lin), randint(0,self.n_col)
+            i, j = randint(0, self.n_lin - 1), randint(0,self.n_col - 1)
             if (i,j) not in self.obstacles and (i,j)!=self.treasure:
                 self.traps.append((i,j))
                 n_traps -= 1
