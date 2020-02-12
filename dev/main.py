@@ -17,4 +17,4 @@ if __name__ == '__main__':
     #train agent on this environment
     trajectory = []
     #show results
-    show_trajectory(mdp_env.n_lin, mdp_env.n_col, trajectory)
+    show_trajectory(mdp_env.n_lin, mdp_env.n_col, mdp_env.coins, mdp_env.treasure, mdp_env.traps, mdp_env.obstacles, trajectory)
