@@ -96,8 +96,8 @@ def draw_grid(display, grid, perso):
 
 
 def grid_pixel_coord(m,n,i,j,w=False):
-    display_width = 800
-    display_height = 800
+    display_width = 750
+    display_height = 750
     margin = 50
     linew = 10
 

@@ -25,6 +25,7 @@ if __name__ == '__main__':
 
     while A.R.flatten()[A.position] != 1:
         A.goToNext()
+    A.finalPos()
     print(A.history)  
     trajectory = A.history
     #show results

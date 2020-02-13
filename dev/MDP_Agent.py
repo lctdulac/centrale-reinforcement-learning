@@ -44,6 +44,10 @@ class Agent:
         #self.history.append( (self.position, prochain_etat[0], action_recommande) )
         self.history.append([self.position // self.dims[1], self.position % self.dims[1]])
         self.position = prochain_etat[0]
+
+    def finalPos(self):
+        self.history.append([self.position // self.dims[1], self.position % self.dims[1]])
+
     
         #print("nouvelle position: ", self.position)
         
