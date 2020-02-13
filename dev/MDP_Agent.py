@@ -46,6 +46,10 @@ class Agent:
         self.position = prochain_etat[0]
     
         #print("nouvelle position: ", self.position)
+
+    def finalpos(self):
+        self.history.append([self.position // self.dims[1], self.position % self.dims[1]])
+        
         
     def getHistory(self):
         """

@@ -2,7 +2,7 @@ import numpy as np
 from random import random, randint, seed
 
 #set the seed so we generate the same grid
-#seed(42)
+seed(42)
 
 
 class MDP_environment():
