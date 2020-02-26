@@ -76,7 +76,7 @@ class MDP_environment():
     def set_treasure(self):
         self.treasure = 0
         while self.treasure == 0:
-            i, j = randint(self.n_lin-2, self.n_lin), randint(self.n_col//2,self.n_col)
+            i, j = randint(self.n_lin-2, self.n_lin - 1), randint(self.n_col//2,self.n_col - 1)
             if (i,j) not in self.obstacles:
                 self.treasure = (i,j)
 

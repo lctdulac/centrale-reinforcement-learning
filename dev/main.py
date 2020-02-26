@@ -21,12 +21,14 @@ if __name__ == '__main__':
     A = Agent([n_lin, n_col], mdp_env.T, mdp_env.R, 0)
     
     A.value_iteration(0.96)
-    print(A.policy)
+    print("La policy est : "+str(A.policy))
 
     while A.R.flatten()[A.position] != 1:
         A.goToNext()
     A.finalpos()
-    print(A.history)  
+    print(A.history)
+    print("[-] Erreur Dans la matrice de transition : Action 3 , Etat 10")
+    print(A.T[3][10])
     trajectory = A.history
     #show results
     show_trajectory(mdp_env.n_lin, 

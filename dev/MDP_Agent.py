@@ -10,6 +10,7 @@ class Agent:
         self.policy    = policy
         self.position  = position
         self.history   = []
+        self.history2  = []
         self.dims      = dims
         self.n_states  = dims[0] * dims[1]
         self.actions   =  {'up' :  [0.8,0.1,0.,0.1],
@@ -43,8 +44,8 @@ class Agent:
         
         #self.history.append( (self.position, prochain_etat[0], action_recommande) )
         self.history.append([self.position // self.dims[1], self.position % self.dims[1]])
+        self.history2.append([self.position])    
         self.position = prochain_etat[0]
-    
         #print("nouvelle position: ", self.position)
 
     def finalpos(self):
