@@ -1,6 +1,6 @@
 # Guide mise en place environnement SUMO 
 
-Cette démarche est inspiré du Papier scientifique : A Deep Reinforcement Learning Approach to Adaptive Traffic Lights Management \\
+Cette démarche est inspiré du Papier scientifique : A Deep Reinforcement Learning Approach to Adaptive Traffic Lights Management.\\
 Lien : http://ceur-ws.org/Vol-2404/paper07.pdf
 
 ## 1. Prérequis 
