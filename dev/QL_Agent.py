@@ -35,6 +35,9 @@ class AgentQ:
         self.episodes = episodes
         self.durations = []
 
+        self.episode_memory_buffer = []
+        self.episode_memory_buffer_len = 3
+
     def getNextAction(self):
         Q_s = self.Q[self.s, :]  # shape (4)
         rand = random()
@@ -99,6 +102,7 @@ class AgentQ:
             self.s = 0
 
             eps_reward = 0
+            episode_hist = [0]
 
             while self.s != s_final:
 
@@ -109,6 +113,7 @@ class AgentQ:
                 # print("next state", next_state)
 
                 eps_reward += self.R[next_state // self.dims[1], next_state % self.dims[1]]
+                episode_hist.append(next_state)
 
                 # calcul de la cible
                 if next_state == s_final:
@@ -129,6 +134,10 @@ class AgentQ:
             self.durations.append(len(self.history))
             self.rewards_hist.append(eps_reward)
             self.history = [0]
+            if len(self.episode_memory_buffer) == self.episode_memory_buffer_len:
+                self.episode_memory_buffer = self.episode_memory_buffer[1:] + [episode_hist]
+            else:
+                self.episode_memory_buffer += [episode_hist]
 
         # print(self.Q)
 
