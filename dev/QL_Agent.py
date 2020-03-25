@@ -75,10 +75,30 @@ class AgentQ:
 
         s_final = np.argmax(self.R)
 
+        self.rewards_hist = []
+
         for i in range(self.episodes):
+
+            if i == self.episodes//4:
+                print("dividing by two")
+                self.eps /= 2
+
+            if i == self.episodes//2:
+                print("dividing by two")
+                self.eps /= 2
+
+            if i == 3*self.episodes//4:
+                print("dividing by two")
+                self.eps /= 2
+
+            if i == 9*self.episodes//10:
+                print("removing random exploration")
+                self.eps = 0
 
             print("- épisode %i/%i..." % (i, self.episodes))
             self.s = 0
+
+            eps_reward = 0
 
             while self.s != s_final:
 
@@ -87,6 +107,8 @@ class AgentQ:
                 # print("action", a)
                 next_state = self.getNextState(a)
                 # print("next state", next_state)
+
+                eps_reward += self.R[next_state // self.dims[1], next_state % self.dims[1]]
 
                 # calcul de la cible
                 if next_state == s_final:
@@ -103,8 +125,9 @@ class AgentQ:
                 # passage à l'état suivant
                 self.s = next_state
 
-            print("--> trajet : ", len(self.history))
+            print("--> trajet : ", len(self.history), "rew :", eps_reward)
             self.durations.append(len(self.history))
+            self.rewards_hist.append(eps_reward)
             self.history = [0]
 
         # print(self.Q)
@@ -112,4 +135,6 @@ class AgentQ:
     def plot_history(self):
 
         plt.plot(range(self.episodes), self.durations)
+        plt.figure(2)
+        plt.plot(range(self.episodes), self.rewards_hist)
         plt.show()

@@ -53,6 +53,10 @@ class MDP_environment():
                         'right': [0.1, 0.8, 0.1, 0.],
                         'down': [0., 0.1, 0.8, 0.1],
                         'left': [0.1, 0., 0.1, 0.8]}
+        """self.actions = {'up': [1, 0., 0., 0.],
+                        'right': [0., 1, 0., 0.],
+                        'down': [0., 0., 1, 0.],
+                        'left': [0., 0., 0., 1]}"""
         self.set_rewards_matrix()
         self.set_transition_matrix()
 
@@ -144,7 +148,7 @@ class MDP_environment():
                 elif (i, j) == self.treasure:
                     reward = 1
                 elif (i, j) in self.coins:
-                    reward = 0.2
+                    reward = 0.05
                 else:
                     reward = -0.1
                 R[i, j] = reward

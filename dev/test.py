@@ -12,10 +12,13 @@ mdp_env.print_grid_infos()
 gamma = 0.9
 lr = 0.1
 eps = 0.2
-episodes = 1000
+episodes = 10000
 dims = [n_lin, n_col]
 T = mdp_env.T
 R = mdp_env.R
+
+print("R:", R)
+
 agent = AgentQ(gamma, lr, eps, episodes, dims, T, R)
 
 agent.Q_Learning()
