@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 seed(42)
 
 
-class AgentQ:
+class AgentSARSA:
 
     # cas stochastique avec T et tirage aléatoire
     # cas déterministe à faire?
@@ -37,8 +37,8 @@ class AgentQ:
         self.episode_memory_buffer = []
         self.episode_memory_buffer_len = 3
 
-    def getNextAction(self):
-        Q_s = self.Q[self.s, :]  # shape (4)
+    def getNextAction(self, s):
+        Q_s = self.Q[s, :]  # shape (4)
         rand = random()
         if rand > self.eps:  # exploitation
             a = np.argmax(Q_s)
@@ -63,7 +63,7 @@ class AgentQ:
 
         return prochain_etat[0]
 
-    def Q_Learning(self):
+    def SARSA_Learning(self):
 
         # initialisation à 0 mieux que random
 
@@ -103,31 +103,29 @@ class AgentQ:
             episode_reward = 0
             episode_hist = [0]
 
-            # Initialisation
-            self.s = 0
+            self.s = 0  # S
+            a = self.getNextAction(self.s)  # A
 
             while self.s != s_final:
 
-                # sampling de l'action et obtention de l'état suivant
-
-                a = self.getNextAction()
-
-                next_state = self.getNextState(a)
+                next_state = self.getNextState(a)  # S'
 
                 episode_hist.append(next_state)
 
                 reward = self.R[next_state // self.dims[1],
-                                next_state % self.dims[1]]
+                                next_state % self.dims[1]]  # R
 
                 episode_reward += reward
+
+                next_action = self.getNextAction(next_state)  # A'
 
                 # calcul de la cible
                 if next_state == s_final:
                     target = self.R[s_final // self.dims[1],
                                     s_final % self.dims[1]]
                 else:
-                    target = self.R[next_state // self.dims[1],
-                                    next_state % self.dims[1]] + self.gamma*np.max(self.Q[next_state, :])
+                    target = reward + self.gamma * \
+                        self.Q[next_state, next_action]
 
                 # update de la Q-table
                 self.Q[self.s, a] = (1-self.lr) * \
@@ -135,6 +133,7 @@ class AgentQ:
 
                 # passage à l'état suivant
                 self.s = next_state
+                a = next_action
 
             # fin de l'épisode
 
