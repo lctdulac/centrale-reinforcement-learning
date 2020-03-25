@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os, sys
+from testing_simulation import Simulation
 
 if 'SUMO_HOME' in os.environ:
     tools = os.path.join(os.environ['SUMO_HOME'], 'tools')
@@ -15,11 +16,5 @@ sumoCmd = [sumoBinary, "-c", "./sumo_config/intersection.sumocfg"]
 
 traci.start(sumoCmd)
 step = 0
-
-while step < 1000:
-   traci.simulationStep()
-   position = traci.vehicle.getPosition('vehicle_0')
-   print("Position du véhicule : "+str(position))
-   step += 1
 
 traci.close()
