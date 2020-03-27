@@ -22,7 +22,6 @@ class Net(nn.Module):
         self.fc5 = nn.Linear(400, 4)
 
     def forward(self, x):
-        print(x)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = F.relu(self.fc3(x))
@@ -62,9 +61,6 @@ class TrainModel:
         return self._model.predict(state)
         """
         state =  torch.from_numpy(state)
-        
-        print("La prédiction est : {}".format(self._model(state).detach().numpy()))
-
         return self._model(state).detach().numpy()
        
 
@@ -73,9 +69,7 @@ class TrainModel:
         """
         Predict the action values from a batch of states
         """
-        print(type(states))
         states = torch.from_numpy(states)
-        print(self._model(states))
         return self._model(states).detach().numpy()
 
 
@@ -83,7 +77,7 @@ class TrainModel:
         """
         Train the nn using the updated q-values
         """
-        print("In training") 
+        
         #change with Adam optimizer
         optimizer = optim.SGD(self._model.parameters(), lr=self._learning_rate, momentum=0.9)
         # create a loss function
