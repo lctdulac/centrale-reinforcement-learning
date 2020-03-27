@@ -1,5 +1,6 @@
 import numpy as np
 from random import random, randint, seed
+from scipy import stats
 
 # set the seed so we generate the same grid
 seed(42)
@@ -53,10 +54,6 @@ class MDP_environment():
                         'right': [0.1, 0.8, 0.1, 0.],
                         'down': [0., 0.1, 0.8, 0.1],
                         'left': [0.1, 0., 0.1, 0.8]}
-        """self.actions = {'up': [1, 0., 0., 0.],
-                        'right': [0., 1, 0., 0.],
-                        'down': [0., 0., 1, 0.],
-                        'left': [0., 0., 0., 1]}"""
         self.set_rewards_matrix()
         self.set_transition_matrix()
 
@@ -154,6 +151,26 @@ class MDP_environment():
                 R[i, j] = reward
         self.R = R
 
+    def next_step(self, state, a):
+
+        # cas stochastique
+
+        distribution_prochain_etat = self.T[a, state, :].tolist()
+
+        probs, etats = [], []
+        for j in range(len(distribution_prochain_etat)):
+            if distribution_prochain_etat[j] != 0:
+                probs.append(distribution_prochain_etat[j])
+                etats.append(j)
+
+        custm = stats.rv_discrete(name="custm", values=(etats, probs))
+        prochain_etat = custm.rvs(size=1)
+
+        return prochain_etat[0], self.R[prochain_etat[0] // self.n_col, prochain_etat[0] % self.n_col]
+
+    def final_state(self):
+        return np.argmax(self.R)
+
     def print_grid_infos(self):
         print('Grid : \n', self.grid)
         print('\nTreasure coordinate : \n', self.treasure)
@@ -161,6 +178,17 @@ class MDP_environment():
         print('\nTraps coordinate : \n', self.traps)
         print('\nCoins coordinate : \n', self.coins)
 
+
+def MDP_environment_simulated(MDP_environment):
+    def __init__(self, n_lin, n_col, p_obs=0.15, n_traps=2, p_coins=0.1):
+        self.n_lin = n_lin
+        self.n_col = n_col
+        self.n_states = n_lin * n_col
+        self.make_grid(p_obs, n_traps, p_coins)
+        self.set_rewards_matrix()
+
+    def next_step():
+        pass
 
 if __name__ == '__main__':
     n_line, n_column = 5, 6
