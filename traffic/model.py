@@ -104,7 +104,6 @@ class TrainModel:
         """
         Save the current model in the folder as h5 file and a model architecture summary as png
         """
-        print(self._model.state_dict())
         torch.save(self._model.state_dict(),os.path.join(path, 'trained_model.pth.tar'))
         #plot_model(self._model, to_file=os.path.join(path, 'model_structure.png'), show_shapes=True, show_layer_names=True)
 
