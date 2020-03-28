@@ -36,11 +36,12 @@ class Net(nn.Module):
 
 
 class TrainModel:
-    def __init__(self, num_layers, width, batch_size, learning_rate, input_dim, output_dim):
+    def __init__(self, num_layers, width, batch_size, learning_rate, input_dim, output_dim, device):
         self._input_dim = input_dim
         self._output_dim = output_dim
         self._batch_size = batch_size
         self._learning_rate = learning_rate
+        self.device = device
         self._model = self._build_model(num_layers, width)
 
 
@@ -49,6 +50,7 @@ class TrainModel:
         Build and compile a fully connected deep neural network
         """
         net = Net(self._input_dim)
+        net.to(self.device)
         return net.double()
         
 
@@ -60,8 +62,8 @@ class TrainModel:
         state = np.reshape(state, [1, self._input_dim])
         return self._model.predict(state)
         """
-        state =  torch.from_numpy(state)
-        return self._model(state).detach().numpy()
+        state =  torch.from_numpy(state).to(self.device)
+        return self._model(state).detach().cpu().numpy()
        
 
 
@@ -69,8 +71,8 @@ class TrainModel:
         """
         Predict the action values from a batch of states
         """
-        states = torch.from_numpy(states)
-        return self._model(states).detach().numpy()
+        states = torch.from_numpy(states).to(self.device)
+        return self._model(states).detach().cpu().numpy()
 
 
     def train_batch(self, states, q_sa):
@@ -81,10 +83,10 @@ class TrainModel:
         #change with Adam optimizer
         optimizer = optim.SGD(self._model.parameters(), lr=self._learning_rate, momentum=0.9)
         # create a loss function
-        criterion = nn.MSELoss()
+        criterion = nn.MSELoss().to(self.device)
          # run the main training loop
         for i in range(len(states)):
-            data, target = torch.from_numpy(states[i]), torch.from_numpy(q_sa[i])
+            data, target = (torch.from_numpy(states[i])).to(self.device), (torch.from_numpy(q_sa[i])).to(self.device)
            
             optimizer.zero_grad()
             net_out = self._model(data)
@@ -102,7 +104,8 @@ class TrainModel:
         """
         Save the current model in the folder as h5 file and a model architecture summary as png
         """
-        self._model.save(os.path.join(path, 'trained_model.h5'))
+        print(self._model.state_dict())
+        torch.save(self._model.state_dict(),os.path.join(path, 'trained_model.pth.tar'))
         #plot_model(self._model, to_file=os.path.join(path, 'model_structure.png'), show_shapes=True, show_layer_names=True)
 
 
@@ -131,11 +134,13 @@ class TestModel:
         """
         Load the model stored in the folder specified by the model number, if it exists
         """
-        model_file_path = os.path.join(model_folder_path, 'trained_model.h5')
-        
+        model_file_path = os.path.join(model_folder_path, 'trained_model.pt')
         if os.path.isfile(model_file_path):
-            loaded_model = load_model(model_file_path)
-            return loaded_model
+            model = Net(self.input_dim)
+            checkpoints = torch.load(model_file_path)
+            model.load_state_dict(checkpoints)
+            # print(loaded_model.state_dict())
+            return (model.eval()).double()
         else:
             sys.exit("Model number not found")
 
@@ -144,8 +149,8 @@ class TestModel:
         """
         Predict the action values from a single state
         """
-        state = np.reshape(state, [1, self._input_dim])
-        return self._model.predict(state)
+        state =  torch.from_numpy(state)
+        return self._model(state.double()).detach().numpy()
 
 
     @property
