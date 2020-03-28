@@ -111,8 +111,17 @@ class MDP_environment():
         # the transition matrix
         adj = np.zeros((self.n_states, self.n_states))
         for i in range(self.n_states):
-            for j in range(self.n_states):
-                if (j == i-self.n_col or j == i+1 or j == i+self.n_col or j == i-1) and self.grid[j//self.n_col, j % self.n_col] != -1:
+            js = []
+            if (i%self.n_col != 0):
+                js.append(i-1)
+            if (i%self.n_col != self.n_col-1):
+                js.append(i+1)
+            if (i // self.n_col != 0):
+                js.append(i - self.n_col)
+            if (i // self.n_col != self.n_lin - 1):
+                js.append(i + self.n_col)
+            for j in js:
+                if self.grid[j//self.n_col, j % self.n_col] != -1:
                     adj[i, j] = 1
         # we can now contruct the transition matrix T
         T = []
@@ -121,13 +130,16 @@ class MDP_environment():
             Ta = np.zeros((self.n_states, self.n_states))
             prob_vector = self.actions[action]
             for i in range(self.n_states):
-                if np.sum(adj[i, :]) != 1.0:
+                if np.sum(adj[i, :]) > 1.0:
                     for k in range(len(prob_vector)):
                         j = i+rotation_vect[k]
                         if 0 <= j < self.n_states:
                             Ta[i, j] = adj[i, j]*prob_vector[k]
                 elif np.sum(adj[i, :]) == 1.0:
                     Ta[i, :] = adj[i, :]
+                else:
+                    Ta[i, :] = np.zeros((len(Ta[i, :])))
+                    Ta[i, i] = 1
                 Lsum = np.sum(Ta[i, :])
                 if Lsum != 1:
                     Ta[i, :] *= 1/Lsum
@@ -191,7 +203,7 @@ def MDP_environment_simulated(MDP_environment):
         pass
 
 if __name__ == '__main__':
-    n_line, n_column = 5, 6
+    n_line, n_column = 3,3
     mdp_env = MDP_environment(n_line, n_column)
     mdp_env.print_grid_infos()
     T = mdp_env.get_transition_matrix()
