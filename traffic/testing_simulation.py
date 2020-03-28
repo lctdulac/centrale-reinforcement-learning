@@ -4,6 +4,8 @@ import random
 import timeit
 import os
 
+from scipy import stats
+
 # phase codes based on environment.net.xml
 PHASE_NS_GREEN = 0  # action 0 code 00
 PHASE_NS_YELLOW = 1
@@ -13,6 +15,9 @@ PHASE_EW_GREEN = 4  # action 2 code 10
 PHASE_EW_YELLOW = 5
 PHASE_EWL_GREEN = 6  # action 3 code 11
 PHASE_EWL_YELLOW = 7
+
+# Threshold for letting cars go through, in case of Long Queue Model
+QUEUE_THRESHOLD  = 30
 
 
 class Simulation:
@@ -119,13 +124,38 @@ class Simulation:
         """
         Pick the best action known based on the current state of the env
         """
-        return np.argmax(self._Model.predict_one(state))
+        if self._Model.priorityType == "NN":
+            return np.argmax(self._Model.predict_one(state))
+        elif self._Model.priorityType == "FR":
+            return self._Model.predict_one(state)
+        elif self._Model.priorityType == "LQ":
+            NS , EW  = self._get_ns_ew_queue_length()
 
+            if self._Model.counter > 30:
+                 
+                if NS > QUEUE_THRESHOLD : 
+                    randomGen = stats.rv_discrete(name='bernoulli', values=((0,1), (0.6,0.4)))
+                    self._Model.action =  randomGen.rvs(size=1)[0]# Un échantillonage entre aller directement et tourner à gauche
+            
+                if EW > QUEUE_THRESHOLD:    
+                    randomGen = stats.rv_discrete(name='bernoulli', values=((2,3), (0.6,0.4)))
+                    self._Model.action = randomGen.rvs(size=1)[0]
+                else:
+                        randomGen = stats.rv_discrete(name='bernoulli', values=((0,2), (0.5,0.5)))
+                        self._Model.action = randomGen.rvs(size=1)[0]  
+                
+                self._Model.counter = 0
+                print(self._Model.action)
+                return self._Model.action
 
+            else:
+                self._Model.counter += 1
+                return self._Model.action
     def _set_yellow_phase(self, old_action):
         """
         Activate the correct yellow light combination in sumo
         """
+        print(old_action)
         yellow_phase_code = old_action * 2 + 1 # obtain the yellow phase code, based on the old action (ref on environment.net.xml)
         traci.trafficlight.setPhase("TL", yellow_phase_code)
 
@@ -156,6 +186,18 @@ class Simulation:
         halt_W = traci.edge.getLastStepHaltingNumber("W2TL")
         queue_length = halt_N + halt_S + halt_E + halt_W
         return queue_length
+
+    def _get_ns_ew_queue_length(self):
+        """
+        Retrieve the number of cars with speed = 0 in NS lanes and EW Lanes separately
+        """
+        halt_N = traci.edge.getLastStepHaltingNumber("N2TL")
+        halt_S = traci.edge.getLastStepHaltingNumber("S2TL")
+        halt_E = traci.edge.getLastStepHaltingNumber("E2TL")
+        halt_W = traci.edge.getLastStepHaltingNumber("W2TL")
+
+        return halt_N + halt_S, halt_E + halt_W
+
 
 
     def _get_state(self):

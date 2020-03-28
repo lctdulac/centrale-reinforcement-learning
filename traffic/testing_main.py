@@ -8,7 +8,7 @@ setup()
 
 from testing_simulation import Simulation
 from generator import TrafficGenerator
-from model import TestModel
+from model import TestModel, TestNaiveModel
 from visualization import Visualization
 from utils import import_test_configuration, set_sumo, set_test_path
 
@@ -16,14 +16,21 @@ from utils import import_test_configuration, set_sumo, set_test_path
 if __name__ == "__main__":
 
     config = import_test_configuration(config_file='testing_settings.ini')
+    print(config['models_path_name'])
     sumo_cmd = set_sumo(config['gui'], config['sumocfg_file_name'], config['max_steps'])
     model_path, plot_path = set_test_path(config['models_path_name'], config['model_to_test'])
 
+    print(model_path)
+    """
     Model = TestModel(
         input_dim=config['num_states'],
         model_path=model_path
     )
-
+    """
+    Model = TestNaiveModel(
+        input_dim=config['num_states'],
+        priorityType="LQ"
+    )
     TrafficGen = TrafficGenerator(
         config['max_steps'], 
         config['n_cars_generated']
