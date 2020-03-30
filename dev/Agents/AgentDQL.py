@@ -1,40 +1,65 @@
 from tensorflow import keras
 import numpy as np
-from random import random, randint, sample, seed
+from random import random, randint, sample
 import matplotlib.pyplot as plt
 
-# set the seed so we generate the same grid
-seed(42)
 
+class AgentDQL:
 
-class AgentDQ:
+    """
+    In this class we create a Deep Q-learning Agent, 
+    running in a stochastic MDP environment.
+    It uses Tensorflow Backend for Deep Learning.
+    ________________________________________________________________
+    Parameters :
+    - gamma : float [0,1]
+    The discount factor
+    - lr : float [0,1]
+    The learning rate
+    - eps : float [0,1] 
+    The exploration factor
+    - episodes : int (default=2)
+    Number of episodes to run
+    - env : MDP_environment
+    Environment to run the Agent in
+
+    ________________________________________________________________
+    Attributes :
+    - s : int
+    The current state
+    - durations : list[int]
+    List of each episodes' duration
+    - episode_memory_buffer : list[list[int]]
+    List of each episodes' states history list
+    - episode_memory_buffer_len : int
+    Size of the memory buffer for the display of histories
+    - memory : list()
+
+    TODO
+
+    """
 
     def __init__(self, gamma, lr, eps, episodes, dims, env):
-        # paramètres
+
+        # Parameters
+        self.episodes = episodes
         self.gamma = gamma
         self.lr = lr
-        # (si eps=0, greedy policy) compris entre 0 et 1. si rand < eps : exploration
         self.eps = eps
-
-        # matrices
         self.env = env
-        self.dims = dims
-        self.n_actions = self.env.T.shape[0]
-        self.n_states = self.dims[0] * self.dims[1]
 
-        # agent
-        self.s = 0  # initialisation à l'état 0
-        self.episodes = episodes
+        # Attributes
+        self.s = 0  # Initialization : state 0
         self.durations = []
-
-        self.memory = []
-        self.memory_size = 2000
-
         self.episode_memory_buffer = []
         self.episode_memory_buffer_len = 3
 
+        # Deep Q specific attributes
+        self.memory = []
+        self.memory_size = 2000
         self.network = self.create_network()
         self.target_network = self.create_network()
+
 
     def create_network(self):
         model = keras.Sequential([
@@ -79,7 +104,9 @@ class AgentDQ:
             a = randint(0, 3)
         return a
 
-    def DQ_Learning(self):
+    def learning(self):
+
+        print("=== USING DEEP Q TRAINING ===")
 
         s_final = self.env.final_state()
         self.rewards_hist = []
@@ -165,6 +192,8 @@ class AgentDQ:
                 self.episode_memory_buffer += [episode_hist]
 
         # fin de l'entraînement
+
+        print("=== DEEP Q TRAINING FINISHED ===")
         # print(self.Q)
 
     def plot_history(self):

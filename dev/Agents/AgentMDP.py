@@ -3,7 +3,7 @@ from random import randint
 from scipy import stats
 
 
-class Agent:
+class AgentMDP:
 
     def __init__(self, dims, T, R, position, policy=[]):
 

@@ -57,6 +57,15 @@ class MDP_environment():
         self.set_rewards_matrix()
         self.set_transition_matrix()
 
+    def getDims(self):
+        return [self.n_lin, self.n_col]
+
+    def getNbActions(self):
+        return self.T.shape[0]
+
+    def getNbStates(self):
+        return self.getDims()[0]*self.getDims()[1]
+
     def make_grid(self, p_obs, n_traps, p_coins):
         self.grid = np.arange(self.n_states).reshape(self.n_lin, self.n_col)
         if p_obs != 0.0:
@@ -165,23 +174,27 @@ class MDP_environment():
 
     def next_step(self, state, a):
 
-        # cas stochastique
+        # Sample state from transition distribution (stochastic event)
+        # Returns the next state and the step reward
 
-        distribution_prochain_etat = self.T[a, state, :].tolist()
+        next_state_distrib = self.T[a, state, :].tolist()
 
-        probs, etats = [], []
-        for j in range(len(distribution_prochain_etat)):
-            if distribution_prochain_etat[j] != 0:
-                probs.append(distribution_prochain_etat[j])
-                etats.append(j)
+        probs, states = [], []
+        for j in range(len(next_state_distrib)):
+            if next_state_distrib[j] != 0:
+                probs.append(next_state_distrib[j])
+                states.append(j)
 
-        custm = stats.rv_discrete(name="custm", values=(etats, probs))
-        prochain_etat = custm.rvs(size=1)
+        custm = stats.rv_discrete(name="custm", values=(states, probs))
+        next_state = custm.rvs(size=1)
 
-        return prochain_etat[0], self.R[prochain_etat[0] // self.n_col, prochain_etat[0] % self.n_col]
+        return next_state[0], self.R[next_state[0] // self.n_col, next_state[0] % self.n_col]
 
-    def final_state(self):
+    def get_final_state(self):
         return np.argmax(self.R)
+
+    def get_final_reward(self):
+        return np.max(self.R)
 
     def print_grid_infos(self):
         print('Grid : \n', self.grid)
