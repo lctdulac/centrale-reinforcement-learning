@@ -1,8 +1,9 @@
 from Env.MDP_environment import MDP_environment
-from Agents.AgentQL import AgentQL
-from Agents.AgentSARSA import AgentSARSA
-from Agents.AgentDQL import AgentDQL
-from GUI.GUI import show_trajectory, draw_grid
+from Agents.AgentQL      import AgentQL
+from Agents.AgentSARSA   import AgentSARSA
+from Agents.AgentDQL     import AgentDQL
+from Agents.AgentITL     import AgentITL
+from GUI.GUI             import show_trajectory, draw_grid
 
 import argparse
 from time import time
@@ -13,7 +14,7 @@ parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument("-gs", "--grid_size", type=int, nargs=2,
                     help='Number of line and colums for the grid')
 parser.add_argument("-a", "--algorithm", type=str,
-                    help='Name of the algo between (qlearning, sarsa, deepq)')
+                    help='Name of the algo between (itlearning, qlearning, sarsa, deepq)')
 parser.add_argument("-e", "--episodes", type=int,
                     help='Number of episodes.')
 parser.add_argument("-d", "--display", type=bool,
@@ -48,7 +49,8 @@ if __name__ == '__main__':
 
     # Agent setup
 
-    gamma = 0.9
+
+    gamma = 0.96
     lr = 0.1
     eps = 0.2
     episodes = args.episodes
@@ -62,7 +64,8 @@ if __name__ == '__main__':
     # Training
 
     begin = time()
-
+    if args.algorithm == "itlearning":
+        agent = AgentITL([n_lin, n_col], mdp_env,0, gamma)
     if args.algorithm == "qlearning":
         agent = AgentQL(gamma, lr, eps, episodes, mdp_env)
  
@@ -84,6 +87,6 @@ if __name__ == '__main__':
 
     agent.plot_history()
 
-    if args.display == "true":
+    if args.display == "true" and args.algorithm != "itlearning":
         for epi in agent.episode_memory_buffer:
             show_traj(epi, mdp_env)

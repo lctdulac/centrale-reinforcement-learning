@@ -1,7 +1,7 @@
 import argparse
-from MDP_environment import MDP_environment
-from MDP_Agent       import Agent
-from GUI             import show_trajectory
+from Env.MDP_environment   import MDP_environment
+from Agents.AgentITL       import AgentITL
+from GUI.GUI               import show_trajectory
 
 
 parser = argparse.ArgumentParser(description='Process some integers.')
@@ -18,11 +18,12 @@ if __name__ == '__main__':
     mdp_env.print_grid_infos()
     mdp_env.set_transition_matrix()
     #Création et entrainement de l'Agent sur L'environnement
-    A = Agent([n_lin, n_col], mdp_env.T, mdp_env.R, 0)
+    gamma = 0.96
+    A     = AgentITL([n_lin, n_col], mdp_env, 0, gamma )
     
-    A.value_iteration(0.96)
+    A.learning()
     print("La policy est : "+str(A.policy))
-
+    print(A.position)
     while A.R.flatten()[A.position] != 1:
         A.goToNext()
     A.finalpos()
