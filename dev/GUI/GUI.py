@@ -67,10 +67,10 @@ def draw_grid(display, grid, perso):
 
     pygame.draw.rect(display, black, cw)
 
-    mouse_pic = pygame.image.load(os.path.join(os.getcwd(),'pictures','mouse.png'))
-    cheese_pic = pygame.image.load(os.path.join(os.getcwd(),'pictures','cheese.png'))
-    morsel_pic = pygame.image.load(os.path.join(os.getcwd(),'pictures','morsel.png'))
-    trap_pic = pygame.image.load(os.path.join(os.getcwd(),'pictures','trap.png'))
+    mouse_pic = pygame.image.load(os.path.join(os.getcwd(),'GUI','pictures','mouse.png'))
+    cheese_pic = pygame.image.load(os.path.join(os.getcwd(),'GUI','pictures','cheese.png'))
+    morsel_pic = pygame.image.load(os.path.join(os.getcwd(),'GUI','pictures','morsel.png'))
+    trap_pic = pygame.image.load(os.path.join(os.getcwd(),'GUI','pictures','trap.png'))
 
     pcoords = grid_pixel_coord(m, n, perso[0], perso[1])
 

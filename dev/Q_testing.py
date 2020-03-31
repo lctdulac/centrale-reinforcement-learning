@@ -84,6 +84,6 @@ if __name__ == '__main__':
 
     agent.plot_history()
 
-    if args.display == True:
+    if args.display == "true":
         for epi in agent.episode_memory_buffer:
             show_traj(epi, mdp_env)
