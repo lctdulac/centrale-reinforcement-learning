@@ -70,7 +70,7 @@ class AgentQL:
 
         print("=== USING CLASSIC Q TRAINING ===")
 
-         # Environment parameters
+        # Environment parameters
 
         dims = self.env.getDims()
         n_actions = self.env.getNbActions()
@@ -118,14 +118,9 @@ class AgentQL:
 
                 a = self.getNextAction(self.s)
 
-                # next_state = self.getNextState(a)
-                step = self.env.next_step(self.s, a)
-
-                next_state = step[0]
+                next_state, reward = self.env.next_step(self.s, a)
 
                 episode_hist.append(next_state)
-
-                reward = step[1]
 
                 episode_reward += reward
 
@@ -185,3 +180,4 @@ class AgentQL:
 
         plt.tight_layout()
         plt.show()
+        

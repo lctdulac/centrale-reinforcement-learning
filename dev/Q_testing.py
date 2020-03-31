@@ -1,6 +1,7 @@
 from Env.MDP_environment import MDP_environment
 from Agents.AgentQL import AgentQL
 from Agents.AgentSARSA import AgentSARSA
+from Agents.AgentDQL import AgentDQL
 from GUI.GUI import show_trajectory, draw_grid
 
 import argparse
@@ -52,6 +53,12 @@ if __name__ == '__main__':
     eps = 0.2
     episodes = args.episodes
 
+    # Deep-Q Agent setup
+
+    batch_size = 32
+    train_every = 10
+    update_every = 20
+
     # Training
 
     begin = time()
@@ -63,7 +70,7 @@ if __name__ == '__main__':
         agent = AgentSARSA(gamma, lr, eps, episodes, mdp_env)
 
     if args.algorithm == "deepq":
-        agent = AgentDQL(gamma, lr, eps, episodes, mdp_env)
+        agent = AgentDQL(gamma, lr, eps, episodes, batch_size, train_every, update_every, mdp_env)
 
     else:
         print("Algorithm name not recognized.")
