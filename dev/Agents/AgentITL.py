@@ -6,9 +6,9 @@ import random
 
 class AgentITL:
     """
-    In this class we create a Policy / Value Learning Agent, 
-    running in a stochastic MDP environment.
-    It uses either policy / value learning .
+    In this class we create a Iteration Learning Agent,
+    following the Policy / Value Learning Algorithms, 
+    and running in a stochastic MDP environment.
     ________________________________________________________________
     Attributes :
     We consider m the number of lines and n number of columns
@@ -73,6 +73,7 @@ class AgentITL:
         self.history.append([self.position // self.dims[1],
                              self.position % self.dims[1]])
 
+
     def getHistory(self):
         """
         Returns the history of the Agent
@@ -80,7 +81,6 @@ class AgentITL:
         return self.history
 
     
-
     def value_iteration(self):
         """
         Trains the Agent with Value Iteration Algorithm
@@ -90,9 +90,9 @@ class AgentITL:
 
         epsilon = 10**-2
         DiffUtil = 10
-        print("Le shape de la matrice de transition est : "+str(self.T.shape))
-        print("Nombre d'actions : "+str(self.n_actions))
-        print("Le nombre d'états : "+str(self.n_states))
+        print("The shape of the transition matrix is : "+str(self.T.shape))
+        print("Number of actions : " + str(self.n_actions))
+        print("Number of states : " + str(self.n_states))
         while DiffUtil > epsilon:
             U = copy(U_)
 
@@ -139,17 +139,33 @@ class AgentITL:
         self.policy = policy
 
     def learning(self):
-        print("What type of iteration algorithm to use :")
+        print("What type of iteration algorithm do you want to use ?")
         print("[0] Value Iteration")
         print("[1] Policy Iteration")
         choice = int(input())
         if choice == 0:
             self.value_iteration()
+
+            print("The optimal policy is : " + str(self.policy))
+            print("Starting at position:", self.position)
+            while self.R.flatten()[self.position] != 1:
+                self.goToNext()
+            self.finalpos()
+            print("History of positions:", self.history)
+
         elif choice == 1:
             self.policy_iteration()
+
+            print("The optimal policy is : " + str(self.policy))
+            print("Starting at position:", self.position)
+            while self.R.flatten()[self.position] != 1:
+                self.goToNext()
+            self.finalpos()
+            print("History of positions:", self.history)
+
         else: 
             print("[-] Wrong choice try again ....")
             raise
 
     def plot_history(self, grid=False):
-        print("No plot for this type of algorithm")
+        print("No training plot for this type of algorithm.")

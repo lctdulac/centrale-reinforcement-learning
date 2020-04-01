@@ -17,8 +17,8 @@ parser.add_argument("-a", "--algorithm", type=str,
                     help='Name of the algo between (itlearning, qlearning, sarsa, deepq)')
 parser.add_argument("-e", "--episodes", type=int,
                     help='Number of episodes.')
-parser.add_argument("-d", "--display", type=bool,
-                    help='Display the maze and the mouse. True or False.')
+parser.add_argument("-d", "--display", type=int,
+                    help='Display the maze and the mouse. 0 or 1.')
 
 args = parser.parse_args()
 
@@ -64,15 +64,17 @@ if __name__ == '__main__':
     # Training
 
     begin = time()
+
     if args.algorithm == "itlearning":
-        agent = AgentITL([n_lin, n_col], mdp_env,0, gamma)
-    if args.algorithm == "qlearning":
+        agent = AgentITL([n_lin, n_col], mdp_env, 0, gamma)
+
+    elif args.algorithm == "qlearning":
         agent = AgentQL(gamma, lr, eps, episodes, mdp_env)
  
-    if args.algorithm == "sarsa":
+    elif args.algorithm == "sarsa":
         agent = AgentSARSA(gamma, lr, eps, episodes, mdp_env)
 
-    if args.algorithm == "deepq":
+    elif args.algorithm == "deepq":
         agent = AgentDQL(gamma, lr, eps, episodes, batch_size, train_every, update_every, mdp_env)
 
     else:
@@ -83,10 +85,20 @@ if __name__ == '__main__':
     # Results
 
     end = time()
-    print("====> Total training time: %.2f" % (end-begin))
+    print("====> Total training time: %.2fs" % (end-begin))
 
     agent.plot_history()
 
-    if args.display == "true" and args.algorithm != "itlearning":
-        for epi in agent.episode_memory_buffer:
-            show_traj(epi, mdp_env)
+    if args.display == 1:
+
+        if args.algorithm == "itlearning":
+            show_trajectory(mdp_env.n_lin,
+                    mdp_env.n_col,
+                    mdp_env.coins,
+                    mdp_env.treasure,
+                    mdp_env.traps,
+                    mdp_env.obstacles,
+                    agent.history)
+        else:
+            for epi in agent.episode_memory_buffer:
+                show_traj(epi, mdp_env)
