@@ -1,4 +1,5 @@
 # Reinforcement Learning
+#### April 2020
 > Authors : Théo Hiraclides | Ravi Hassanaly | Mathieu Perrin | Adam Mabrouk | Lancelot Prégniard
 
 _This repository contains the code of our final year project as part of the Master of Engineering at École Centrale de Lyon (France)._
@@ -32,10 +33,10 @@ The `traffic` folder contains the code for the Deep Q-learning implementation fo
 Run the `letsplay.py` to test any algorithm in this environment.
 
 The arguments are :
-- -gs or --grid_size : size of the grid as two integers
-- -a or --algorithm : name of the algorithm between (itlearning, qlearning, sarsa, deepq)
-- -e or --episodes : number of episodes for the simulation as an integer
-- -d or --display : (0, 1) choice to display the last episodes in the pygame GUI or not
+- `-gs` or `--grid_size` : size of the grid as two integers
+- `-a` or `--algorithm` : name of the algorithm between (itlearning, qlearning, sarsa, deepq)
+- `-e` or `--episodes` : number of episodes for the simulation as an integer
+- `-d` or `--display` : (0, 1) choice to display the last episodes in the pygame GUI or not
 
 
 Examples:
@@ -48,6 +49,4 @@ python letsplay.py -gs 8 8 -a itlearning -e 100 -d 1
 
 #### Traffic control (SUMO environment)
 
-_The README.md can be found in the Traffic folder_
-
-##### April 2020
+_The README.md can be found in the `traffic` folder <a href="https://github.com/lctdulac/centrale-reinforcement-learning/tree/master/traffic">here.</a>_
