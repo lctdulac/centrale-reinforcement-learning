@@ -18,7 +18,7 @@ Please install all the libraries described in `requirements.txt` in your python 
 
 The `dev` folder contains the code for :
 - `Env`: The Markov Decision Process environment of the "mouse in a maze" game.
-- `Agents` : The code for the Value-Iteration, Policy-Iteration, Q-learning, SARSA and Deep Q-learning algorithms.
+- `Agents` : The code for the Iteration Learning (Value-Iteration, Policy-Iteration), Q-learning, SARSA and Deep Q-learning algorithms.
 - `GUI` : The code for the PyGame Graphical Interface.
 
 The `research` folder contains our first Jupyter Notebooks. We used it as a starting point in our project.
