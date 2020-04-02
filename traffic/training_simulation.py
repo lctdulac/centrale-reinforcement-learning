@@ -276,8 +276,11 @@ class Simulation:
                 current_q[action] = reward + self._gamma * np.amax(q_s_a_d[i])  # update Q(state, action)
                 x[i] = state
                 y[i] = current_q  # Q(state) that includes the updated action value
+            show = False
+            if i%10 == 0:
+                show=True
 
-            self._Model.train_batch(x, y)  # train the NN
+            self._Model.train_batch(x, y, show)  # train the NN
 
 
     def _save_episode_stats(self):

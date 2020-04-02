@@ -59,7 +59,7 @@ class Simulation:
 
             # choose the light phase to activate, based on the current state of the intersection
             action = self._choose_action(current_state)
-
+            print(action)
             # if the chosen phase is different from the last phase, activate the yellow phase
             if self._step != 0 and old_action != action:
                 self._set_yellow_phase(old_action)

@@ -27,7 +27,7 @@ class Net(nn.Module):
         x = F.relu(self.fc3(x))
         x = F.relu(self.fc4(x))
         x = self.fc5(x)
-        return F.relu(x)
+        return F.linear(x)
 
     def save(self, path):
         torch.save(self.state_dict(), path)
@@ -41,7 +41,7 @@ class TrainModel:
         self._output_dim = output_dim
         self._batch_size = batch_size
         self._learning_rate = learning_rate
-        self.device = device
+        self._device = device
         self._model = self._build_model(num_layers, width)
 
 
@@ -50,7 +50,7 @@ class TrainModel:
         Build and compile a fully connected deep neural network
         """
         net = Net(self._input_dim)
-        net.to(self.device)
+        net.to(self._device)
         return net.double()
         
 
@@ -62,7 +62,7 @@ class TrainModel:
         state = np.reshape(state, [1, self._input_dim])
         return self._model.predict(state)
         """
-        state =  torch.from_numpy(state).to(self.device)
+        state =  torch.from_numpy(state).to(self._device)
         return self._model(state).detach().cpu().numpy()
        
 
@@ -71,26 +71,27 @@ class TrainModel:
         """
         Predict the action values from a batch of states
         """
-        states = torch.from_numpy(states).to(self.device)
+        states = torch.from_numpy(states).to(self._device)
         return self._model(states).detach().cpu().numpy()
 
 
-    def train_batch(self, states, q_sa):
+    def train_batch(self, states, q_sa, show=False):
         """
         Train the nn using the updated q-values
         """
         
         #change with Adam optimizer
-        optimizer = optim.SGD(self._model.parameters(), lr=self._learning_rate, momentum=0.9)
+        optimizer = optim.Adam(self._model.parameters(), lr=self._learning_rate)
         # create a loss function
-        criterion = nn.MSELoss().to(self.device)
+        criterion = nn.MSELoss().to(self._device)
          # run the main training loop
         for i in range(len(states)):
-            data, target = (torch.from_numpy(states[i])).to(self.device), (torch.from_numpy(q_sa[i])).to(self.device)
+            data, target = (torch.from_numpy(states[i])).to(self._device), (torch.from_numpy(q_sa[i])).to(self._device)
            
-            optimizer.zero_grad()
+            
             net_out = self._model(data)
             loss = criterion(net_out, target)
+            optimizer.zero_grad()
             loss.backward()
             optimizer.step()
             """
@@ -99,6 +100,8 @@ class TrainModel:
                     epoch, batch_idx * len(data), len(train_loader.dataset),
                         100. * batch_idx / len(train_loader), loss.data[0]))
             """
+        if show:
+            print(self._model.parameters())
 
     def save_model(self, path):
         """
@@ -133,7 +136,7 @@ class TestModel:
         """
         Load the model stored in the folder specified by the model number, if it exists
         """
-        model_file_path = os.path.join(model_folder_path, 'trained_model.pt')
+        model_file_path = os.path.join(model_folder_path, 'trained_model.pth.tar')
         if os.path.isfile(model_file_path):
             model = Net(self.input_dim)
             checkpoints = torch.load(model_file_path)
