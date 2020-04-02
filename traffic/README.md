@@ -1,4 +1,4 @@
-# SOMO environment setup guide 
+# SUMO environment setup guide 
 
 This has been adapted from the research paper : A Deep Reinforcement Learning Approach to Adaptive Traffic Lights Management.\\
 Link : http://ceur-ws.org/Vol-2404/paper07.pdf
