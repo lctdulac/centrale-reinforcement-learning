@@ -1,8 +1,10 @@
 # SUMO environment setup guide 
 
-This has been adapted from the research paper : A Deep Reinforcement Learning Approach to Adaptive Traffic Lights Management.
+This has been adapted from the research paper : 
 
-Link : http://ceur-ws.org/Vol-2404/paper07.pdf
+```A Deep Reinforcement Learning Approach to Adaptive Traffic Lights Management.```
+
+Link <a href="http://ceur-ws.org/Vol-2404/paper07.pdf"> here. </a>
 
 ## 1. Requirement 
 
