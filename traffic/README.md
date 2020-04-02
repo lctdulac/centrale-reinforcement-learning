@@ -2,8 +2,9 @@
 
 This has been adapted from the research paper : 
 
-```"A Deep Reinforcement Learning Approach to Adaptive Traffic Lights Management"```\\
-_Andrea Vidali, Luca Crociani, Giuseppe Vizzari, Stefania Bandini_
+```"A Deep Reinforcement Learning Approach to Adaptive Traffic Lights Management"```
+
+by: _Andrea Vidali, Luca Crociani, Giuseppe Vizzari, Stefania Bandini_
 
 Link <a href="http://ceur-ws.org/Vol-2404/paper07.pdf"> here. </a>
 
