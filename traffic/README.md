@@ -1,49 +1,55 @@
-# Guide mise en place environnement SUMO 
+# SOMO environment setup guide 
 
-Cette démarche est inspiré du Papier scientifique : A Deep Reinforcement Learning Approach to Adaptive Traffic Lights Management.\\
-Lien : http://ceur-ws.org/Vol-2404/paper07.pdf
+This has been adapted from the research paper : A Deep Reinforcement Learning Approach to Adaptive Traffic Lights Management.\\
+Link : http://ceur-ws.org/Vol-2404/paper07.pdf
 
-## 1. Prérequis 
+## 1. Requirement 
 
-Pour pouvoir développer cette partie il faut installer les outils suivants : 
+Inorder to use this code you need to install the following : 
 
 * Python 3.7
-* SUMO ( Tutoriel Installation : https://sumo.dlr.de/docs/Installing.html#linux )
-* Traci - API Python pour communiquer avec le simulateur de traffic ( https://sumo.dlr.de/docs/TraCI/Interfacing_TraCI_from_Python.html )
+* Tensorflow 
+* SUMO ( Installation tutorial : https://sumo.dlr.de/docs/Installing.html#linux )
+* Traci - Python API to connect to the trafic simulator ( https://sumo.dlr.de/docs/TraCI/Interfacing_TraCI_from_Python.html )
 
-## 2. Lancement du simulateur
+## 2. Using the simulator
 
-SUMO peut être lancé en 2 mode ( Mode graphique et Mode serveur ). Avant le lancement de n'importe quelle simulation il est nécessaire
-de définir certaines entrées : \\
+SUMO can be lauched in two different modes : GUI and server. Before starting simulation, you will need to define some entry variables : \\
 
-* Un fichier de configuration central (.sumocfg)
-* Le fichier XML contenant la configuration du réseau routier à utiliser
-* Le ficher  XML contenant la configuration des véhicules , flux de déplacement et feux
+* a central configuration file (.sumocfg)
+* an XML file with the configuration of the road network 
+* an XML file with the simulation configurations : vehicules and traffic lights
 
-Pour lancer SUMO ( sur Windows / Linux ) il suffit de lancer la commande suivante : \\
+To Launch SUMO ( Windows / Linux ) you will need to use to following command lines : \\
 
 ```bash
 sumo -c ./sumo_config/intersection.sumocfg
 ```
 
-ou en mode graphique 
+or with GUI : \\
 
 ```bash
 sumo-gui -c ./sumo_config/intersection.sumocfg
 ```
 
+## 3. Repository usage
 
-## 3. Arborescence du projet 
+You need to have all the requirement installed to run these command.
 
+In order to use the repository you will have to setup the parameters in the ```training_settings.ini``` file.
 
-
-## 4. Tests lecture écriture
-
-Dans cette partie nous testons la connectivité entre SUMO - Python
-
+Then simply use the following command line :
 ```bash
-python3 test_connect.py
+python3 training_main.py
 ```
 
-Il faut s'attendre après le test à voir une position de voiture qui bouge.
+After this a new folder with the model will be created. 
+
+You can use the saved model to run a test : write the parameters you want in the ```testing_settings.ini``` file and then use :
+```bash
+python3 testing_main.py
+```
+A test file with plots will be created in the model folder.
+
+This code as been adapted from the following repository : https://github.com/AndreaVidali/Deep-QLearning-Agent-for-Traffic-Signal-Control/tree/master/TLCS .
 
