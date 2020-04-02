@@ -1,6 +1,7 @@
 # SUMO environment setup guide 
 
-This has been adapted from the research paper : A Deep Reinforcement Learning Approach to Adaptive Traffic Lights Management.\\
+This has been adapted from the research paper : A Deep Reinforcement Learning Approach to Adaptive Traffic Lights Management.
+
 Link : http://ceur-ws.org/Vol-2404/paper07.pdf
 
 ## 1. Requirement 
@@ -14,19 +15,19 @@ Inorder to use this code you need to install the following :
 
 ## 2. Using the simulator
 
-SUMO can be lauched in two different modes : GUI and server. Before starting simulation, you will need to define some entry variables : \\
+SUMO can be lauched in two different modes : GUI and server. Before starting simulation, you will need to define some entry variables : 
 
 * a central configuration file (.sumocfg)
 * an XML file with the configuration of the road network 
 * an XML file with the simulation configurations : vehicules and traffic lights
 
-To Launch SUMO ( Windows / Linux ) you will need to use to following command lines : \\
+To Launch SUMO ( Windows / Linux ) you will need to use to following command lines : 
 
 ```bash
 sumo -c ./sumo_config/intersection.sumocfg
 ```
 
-or with GUI : \\
+or with GUI : 
 
 ```bash
 sumo-gui -c ./sumo_config/intersection.sumocfg
@@ -51,5 +52,5 @@ python3 testing_main.py
 ```
 A test file with plots will be created in the model folder.
 
-This code as been adapted from the following repository : https://github.com/AndreaVidali/Deep-QLearning-Agent-for-Traffic-Signal-Control/tree/master/TLCS .
+This code has been adapted from the following repository : https://github.com/AndreaVidali/Deep-QLearning-Agent-for-Traffic-Signal-Control/tree/master/TLCS .
 
