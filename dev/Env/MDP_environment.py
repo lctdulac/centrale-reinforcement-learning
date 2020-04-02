@@ -49,6 +49,9 @@ class MDP_environment():
         self.n_lin = n_lin
         self.n_col = n_col
         self.n_states = n_lin * n_col
+        self.p_obs = p_obs
+        self.n_traps = n_traps
+        self.p_coins = p_coins
         self.make_grid(p_obs, n_traps, p_coins)
         self.actions = {'up':  [0.8, 0.1, 0., 0.1],
                         'right': [0.1, 0.8, 0.1, 0.],
@@ -61,7 +64,7 @@ class MDP_environment():
         return [self.n_lin, self.n_col]
 
     def getNbActions(self):
-        return self.T.shape[0]
+        return len(self.actions)
 
     def getNbStates(self):
         return self.getDims()[0]*self.getDims()[1]
@@ -190,6 +193,9 @@ class MDP_environment():
 
         return next_state[0], self.R[next_state[0] // self.n_col, next_state[0] % self.n_col]
 
+    def to_coords(self, state):
+        return state // self.n_col % self.n_lin, state % self.n_col
+
     def get_final_state(self):
         return np.argmax(self.R)
 
@@ -204,19 +210,70 @@ class MDP_environment():
         print('\nCoins coordinate : \n', self.coins)
 
 
-def MDP_environment_simulated(MDP_environment):
-    def __init__(self, n_lin, n_col, p_obs=0.15, n_traps=2, p_coins=0.1):
-        self.n_lin = n_lin
-        self.n_col = n_col
-        self.n_states = n_lin * n_col
-        self.make_grid(p_obs, n_traps, p_coins)
-        self.set_rewards_matrix()
+class MDP_environment_simulated(MDP_environment):
 
-    def next_step():
+    def __init__(self, n_lin, n_col):
+        super().__init__(n_lin, n_col)
+        self.coin_value = 0.5
+        for i in range(self.n_lin):
+            for j in range(self.n_col):
+                if 0 < self.R[i][j] < self.get_final_reward():
+                    self.R[i][j] = self.coin_value
+
+    def set_transition_matrix(self):
+        # no more transition matrix
         pass
 
+    def is_final(self, state):
+        return np.argmax(state[:, :, 0]) == np.argmax(state[:, :, 1])
+
+    def regenerate(self):
+        self.make_grid(self.p_obs, self.n_traps, self.p_coins)
+        self.set_rewards_matrix()
+        self.coin_value = 0.5
+        for i in range(self.n_lin):
+            for j in range(self.n_col):
+                if 0 < self.R[i][j] < self.get_final_reward():
+                    self.R[i][j] = self.coin_value
+
+    def check_coord(self, coords):
+        i, j = coords
+        if min(i, j) < 0:
+            return False
+        if i >= self.n_lin:
+            return False
+        if j >= self.n_col:
+            return False
+        if self.R[i, j] == 0:
+            return False
+        return True
+
+    def to_coords(self, state):
+        return super().to_coords(np.argmax(state[:, :, 0]))
+
+    def to_state(self, coords):
+        player = np.zeros(np.shape(self.R))
+        player[coords[0], coords[1]] = 1
+        nstate = np.zeros((self.n_lin, self.n_col, 2))
+        nstate[:, :, 0] = player
+        nstate[:, :, 1] = self.R
+        return nstate
+
+    def next_step(self, state, a):
+        coords = self.to_coords(state)
+        movement = [[-1, 0], [0, 1], [1, 0], [0, -1]][a]
+        new_coords = [coords[0] + movement[0], coords[1] + movement[1]]
+        if not self.check_coord(new_coords):
+            new_coords = coords
+        reward = self.R[new_coords[0]][new_coords[1]]
+        if reward == self.coin_value:
+            self.R[new_coords[0]][new_coords[1]] = -0.1
+        return self.to_state(new_coords), reward
+
+
+
 if __name__ == '__main__':
-    n_line, n_column = 3,3
+    n_line, n_column = 3, 3
     mdp_env = MDP_environment(n_line, n_column)
     mdp_env.print_grid_infos()
     T = mdp_env.get_transition_matrix()
