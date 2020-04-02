@@ -1,7 +1,7 @@
-from Env.MDP_environment import MDP_environment
+from Env.MDP_environment import MDP_environment, MDP_environment_simulated
 from Agents.AgentQL      import AgentQL
 from Agents.AgentSARSA   import AgentSARSA
-from Agents.AgentDQL     import AgentDQL
+from Agents.AgentDQL     import AgentDQL, AgentDCQL
 from Agents.AgentITL     import AgentITL
 from GUI.GUI             import show_trajectory, draw_grid
 
@@ -14,7 +14,7 @@ parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument("-gs", "--grid_size", type=int, nargs=2,
                     help='Number of line and colums for the grid')
 parser.add_argument("-a", "--algorithm", type=str,
-                    help='Name of the algo between (itlearning, qlearning, sarsa, deepq)')
+                    help='Name of the algo between (itlearning, qlearning, sarsa, deepq, convodeepq)')
 parser.add_argument("-e", "--episodes", type=int,
                     help='Number of episodes.')
 parser.add_argument("-d", "--display", type=int,
@@ -43,7 +43,10 @@ if __name__ == '__main__':
     # Environment setup
 
     [n_lin, n_col] = args.grid_size
-    mdp_env = MDP_environment(n_lin, n_col)
+    if args.algorithm == "convodeepq":
+        mdp_env = MDP_environment_simulated(n_lin, n_col)
+    else:
+        mdp_env = MDP_environment(n_lin, n_col)
 
     mdp_env.print_grid_infos()
 
@@ -76,6 +79,13 @@ if __name__ == '__main__':
 
     elif args.algorithm == "deepq":
         agent = AgentDQL(gamma, lr, eps, episodes, batch_size, train_every, update_every, mdp_env)
+    
+    if args.algorithm == "convodeepq":
+        train_every = 40
+        update_every = 40
+        eps *= 4
+        batch_size = 100
+        agent = AgentDCQL(gamma, lr, eps, episodes, batch_size, train_every, update_every, mdp_env)
 
     else:
         print("Algorithm name not recognized.")
