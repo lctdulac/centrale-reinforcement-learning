@@ -126,10 +126,35 @@ class TrainModel:
         return self._batch_size
 
 
+class TestNaiveModel:
+    def __init__(self, input_dim, priorityType):
+        self._input_dim     = input_dim
+        self._priorityType  = priorityType 
+        self.counter        = 0
+        self.action         = 0
+    
+    def predict_one(self, state):
+        if self._priorityType == "FR": # Modèle a rotation fixe ( Déja parametré pas besoin d'agir)
+            if self.counter <= 30:
+                self.counter += 1
+                return self.action
+            else:
+                self.counter = 0
+                self.action = (self.action + 1) % 4
+                return self.action 
+        elif self._priorityType == "LQ": # Rajout de collection de longeur de queue correspondante
+            pass
+
+    @property
+    def priorityType(self):
+        return self._priorityType
+
 class TestModel:
     def __init__(self, input_dim, model_path):
         self._input_dim = input_dim
         self._model = self._load_my_model(model_path)
+        self._priorityType = "NN"
+        
 
 
     def _load_my_model(self, model_folder_path):
@@ -158,3 +183,7 @@ class TestModel:
     @property
     def input_dim(self):
         return self._input_dim
+
+    @property
+    def priorityType(self):
+        return self._priorityType
